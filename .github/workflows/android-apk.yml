@@ -1,6 +1,12 @@
 name: Gerar APK Android
 
 on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'app/**'
+      - '.github/workflows/android-apk.yml'
   workflow_dispatch:
 
 jobs:
