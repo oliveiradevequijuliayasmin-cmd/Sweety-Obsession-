@@ -1,0 +1,8 @@
+{
+  "appId": "com.sweetpoison.game",
+  "appName": "Sweet Poison",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

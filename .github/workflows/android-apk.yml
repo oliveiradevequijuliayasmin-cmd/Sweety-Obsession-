@@ -1,0 +1,54 @@
+name: Gerar APK Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Instalar dependências
+        working-directory: app
+        run: npm ci
+
+      - name: Compilar jogo
+        working-directory: app
+        run: npm run build
+
+      - name: Criar projeto Android
+        working-directory: app
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Gerar APK
+        working-directory: app/android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Disponibilizar APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Sweet-Poison-APK
+          path: app/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
